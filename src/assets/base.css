@@ -2,12 +2,21 @@
 :root {
   --white: #ffffff;
   --gray: rgb(212, 212, 212);
+  --darkgray: #787c7e;
+  --green: #6aaa64;
+  --yellow: #c9b458;
+  --black: black;
 }
 
 /* semantic color variables for this project */
 :root {
   --color-background: var(--white);
   --color-border: var(--gray);
+
+  --color-active: var(--black);
+  --color-correct: var(--green);
+  --color-incorrect: var(--darkgray);
+  --color-misplaced: var(--yellow);
 }
 
 *,

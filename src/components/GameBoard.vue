@@ -1,15 +1,12 @@
 <template>
-  <div id="root">
-    <div class="row" v-for="guess in guesses" :key="guess.number">
-      <div v-for="letter in guess.letters" class="letter" :key="letter.index">
-        {{ letter.value }}
-      </div>
-    </div>
+  <div id="gameBoard">
+    <GuessRow v-for="guess in guesses" :key="guess.number" :guess="guess" />
   </div>
 </template>
 
 <script lang="ts">
 import type { LetterGuess, WordGuess } from "@/types";
+import GuessRow from "./GuessRow.vue";
 
 const TOTAL_GUESSES = 6;
 const WORD_SIZE = 5;
@@ -20,8 +17,11 @@ export default {
       guesses: [] as WordGuess[],
       currentGuessIndex: 0,
       currentLetterIndex: 0,
-      word: "boats",
+      word: "BOATS",
     };
+  },
+  components: {
+    GuessRow,
   },
   mounted: function () {
     this.$_setInitialGuesses();
@@ -40,6 +40,9 @@ export default {
     $_onKeyPressed: function (e: KeyboardEvent) {
       const alteredGuess = this.guesses[this.currentGuessIndex];
       if (e.key == "Enter") {
+        if (this.currentLetterIndex !== 5) {
+          return;
+        }
         this.$_checkWord();
         if (this.currentGuessIndex < 5) {
           this.currentGuessIndex++;
@@ -60,15 +63,45 @@ export default {
         /^[A-Z]$/i.test(e.key?.toUpperCase()) &&
         this.currentLetterIndex < WORD_SIZE
       ) {
-        alteredGuess.letters[this.currentLetterIndex].value =
-          e.key.toUpperCase();
+        const letter = alteredGuess.letters[this.currentLetterIndex];
+        letter.value = e.key.toUpperCase();
         if (this.currentLetterIndex < WORD_SIZE) {
           this.currentLetterIndex++;
         }
       }
     },
     $_checkWord() {
-      console.log(this.word);
+      const alteredGuess = this.guesses[this.currentGuessIndex];
+      alteredGuess.letters.map((currentLetter) => {
+        const correctLetter = this.word[currentLetter.index];
+        if (correctLetter == currentLetter.value) {
+          currentLetter.status = "correct";
+        } else if (this.word.includes(currentLetter.value)) {
+          currentLetter.status = "misplaced";
+        } else {
+          currentLetter.status = "incorrect";
+        }
+      });
+
+      const letterStatuses = alteredGuess.letters.map(
+        (letter) => letter.status
+      );
+
+      if (letterStatuses.every((status) => status === "correct")) {
+        setTimeout(() => {
+          alert("you win");
+        });
+        window.location.reload();
+      }
+
+      if (this.currentGuessIndex === 5) {
+        setTimeout(() => {
+          alert("you lose");
+        });
+        window.location.reload();
+      }
+
+      console.log(letterStatuses);
     },
     $_setInitialGuesses: function () {
       const state: WordGuess[] = [];
@@ -98,26 +131,10 @@ export default {
 </script>
 
 <style scoped>
-#root {
+#gameBoard {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.letter {
-  display: grid;
-  place-items: center;
-  text-transform: capitalize;
-  min-width: 4rem;
-  min-height: 4rem;
-  border: 2px solid var(--color-border);
-}
-
-.row {
-  justify-content: space-between;
-  display: flex;
-  flex-direction: row;
   gap: 0.5rem;
 }
 </style>
