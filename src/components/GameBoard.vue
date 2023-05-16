@@ -38,27 +38,37 @@ export default {
       document.body.addEventListener("keydown", this.$_onKeyPressed);
     },
     $_onKeyPressed: function (e: KeyboardEvent) {
+      const alteredGuess = this.guesses[this.currentGuessIndex];
       if (e.key == "Enter") {
-        alert("enter");
+        this.$_checkWord();
+        if (this.currentGuessIndex < 5) {
+          this.currentGuessIndex++;
+          this.currentLetterIndex = 0;
+        }
+
         return;
       }
 
-      const alteredGuess = this.guesses[this.currentGuessIndex];
       if (e.key == "Backspace") {
-        if (this.currentLetterIndex !== WORD_SIZE) {
-          console.log("here");
+        if (this.currentLetterIndex > 0) {
           this.currentLetterIndex--;
         }
         if (alteredGuess.letters[this.currentLetterIndex]) {
           alteredGuess.letters[this.currentLetterIndex].value = "";
         }
-      } else if (/^[A-Z]$/i.test(e.key?.toUpperCase())) {
+      } else if (
+        /^[A-Z]$/i.test(e.key?.toUpperCase()) &&
+        this.currentLetterIndex < WORD_SIZE
+      ) {
         alteredGuess.letters[this.currentLetterIndex].value =
           e.key.toUpperCase();
-        if (this.currentLetterIndex < 4) {
+        if (this.currentLetterIndex < WORD_SIZE) {
           this.currentLetterIndex++;
         }
       }
+    },
+    $_checkWord() {
+      console.log(this.word);
     },
     $_setInitialGuesses: function () {
       const state: WordGuess[] = [];
@@ -66,7 +76,7 @@ export default {
         const letters = [];
         for (let j = 0; j < 5; j++) {
           const newLetterGuess: LetterGuess = {
-            value: "a",
+            value: "",
             status: "empty",
             index: j,
           };
