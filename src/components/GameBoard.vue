@@ -9,11 +9,12 @@
 import type { LetterGuess, WordGuess } from "@/types";
 import GuessRow from "./GuessRow.vue";
 import { getWord } from "@/utils/word-utils";
+import { defineComponent } from "vue";
 
 const TOTAL_GUESSES = 6;
 const WORD_SIZE = 5;
 
-export default {
+export default defineComponent({
   data: function () {
     return {
       guesses: [] as WordGuess[],
@@ -134,7 +135,7 @@ export default {
       this.guesses = state;
     },
   },
-};
+});
 </script>
 
 <style scoped>

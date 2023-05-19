@@ -15,12 +15,13 @@
 <script lang="ts">
 import type { LetterGuess } from "@/types";
 import type { PropType } from "vue";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   props: {
     letter: Object as PropType<LetterGuess>,
   },
-};
+});
 </script>
 
 <style scoped>

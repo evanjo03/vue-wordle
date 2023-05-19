@@ -1,8 +1,9 @@
 <script lang="ts">
 import type { WordGuess } from "@/types";
 import type { PropType } from "vue";
+import { defineComponent } from "vue";
 import LetterCell from "./LetterCell.vue";
-export default {
+export default defineComponent({
   props: {
     guess: {
       type: Object as PropType<WordGuess>,
@@ -11,7 +12,7 @@ export default {
   components: {
     LetterCell,
   },
-};
+});
 </script>
 
 <template>
