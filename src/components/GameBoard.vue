@@ -1,5 +1,6 @@
 <template>
   <div id="gameBoard">
+    <div>{{ word }}</div>
     <GuessRow v-for="guess in guesses" :key="guess.number" :guess="guess" />
   </div>
 </template>
@@ -7,6 +8,7 @@
 <script lang="ts">
 import type { LetterGuess, WordGuess } from "@/types";
 import GuessRow from "./GuessRow.vue";
+import { getWord } from "@/utils/word-utils";
 
 const TOTAL_GUESSES = 6;
 const WORD_SIZE = 5;
@@ -17,20 +19,26 @@ export default {
       guesses: [] as WordGuess[],
       currentGuessIndex: 0,
       currentLetterIndex: 0,
-      word: "BOATS",
+      word: "",
     };
   },
   components: {
     GuessRow,
   },
   mounted: function () {
-    this.$_setInitialGuesses();
-    this.$_addGlobalEventListeners();
+    this.$_initializeGame();
   },
   destroyed: function () {
     this.$_removeGlobalEventListeners();
   },
   methods: {
+    $_initializeGame: function () {
+      this.$_setInitialGuesses();
+      this.$_addGlobalEventListeners();
+      this.word = getWord();
+      this.currentLetterIndex = 0;
+      this.currentGuessIndex = 0;
+    },
     $_removeGlobalEventListeners: function () {
       document.body.removeEventListener("keydown", this.$_onKeyPressed);
     },
@@ -90,18 +98,17 @@ export default {
       if (letterStatuses.every((status) => status === "correct")) {
         setTimeout(() => {
           alert("you win");
+          this.$_initializeGame();
         });
-        window.location.reload();
+        return;
       }
 
       if (this.currentGuessIndex === 5) {
         setTimeout(() => {
           alert("you lose");
+          this.$_initializeGame();
         });
-        window.location.reload();
       }
-
-      console.log(letterStatuses);
     },
     $_setInitialGuesses: function () {
       const state: WordGuess[] = [];
