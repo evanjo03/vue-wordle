@@ -1,6 +1,5 @@
 <template>
   <div id="gameBoard">
-    <div>{{ word }}</div>
     <GuessRow v-for="guess in guesses" :key="guess.number" :guess="guess" />
   </div>
 </template>
