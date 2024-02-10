@@ -1,6 +1,7 @@
 # vue-wordle
 
 Wordle built to help learn Vue@2.
+Some change
 
 ## Deployment
 
